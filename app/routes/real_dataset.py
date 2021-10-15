@@ -7,7 +7,7 @@ from app.utils import get_db
 
 router = APIRouter()
 
-@router.get("/real_datasets/{real_dataset_id}", status_code=status.HTTP_200_OK)
+@router.get("/projects/real_datasets/{real_dataset_id}", status_code=status.HTTP_200_OK)
 async def get_real_dataset(real_dataset_id: str, db = Depends(get_db)):
     real_dataset = get_real_dataset_service(db, real_dataset_id)
 

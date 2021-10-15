@@ -8,6 +8,8 @@ def get_users_service(db):
 
 def get_user_service(db, user_id):
     user = userEntity(db.users.find_one({"_id": ObjectId(user_id)}))
+    if not user:
+        return False 
     return user
 
 def create_user_service(db, req: NewUser):

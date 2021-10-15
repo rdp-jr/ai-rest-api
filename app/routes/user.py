@@ -17,7 +17,10 @@ async def get_user(user_id: str, db = Depends(get_db)):
 
 @router.get("/dashboard", status_code=status.HTTP_200_OK)
 async def dashboard(db = Depends(get_db)):
-    return get_user_service(db, logged_in_user_id)
+    user = get_user_service(db, logged_in_user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user
 
 @router.post('/users', status_code=status.HTTP_201_CREATED)
 async def create_user(req: NewUser, db = Depends(get_db)):

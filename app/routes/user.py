@@ -2,10 +2,8 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from app.services.user import *
 from app.models.user import *
 
-from app.config import db as conn, logged_in_user_id
-
-def get_db():
-    yield conn
+from app.utils import get_db
+from app.config import logged_in_user_id
 
 router = APIRouter()
 

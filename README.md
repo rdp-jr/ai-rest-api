@@ -29,6 +29,7 @@ Note:
 1. Run server with `uvicorn app.main:app --reload`
 
 ## Run Tests
-1. In `app/config.py`, set `testing` to `True` (default set to `True`)
-2. To run the full test suite, run `pytest`
-3. To run a single test (ex. `test_user.py`) run `pytest tests/test_user.py`
+1. Make sure the database is non-existent, as the tests create and mock the data automatically. The database is cleared after running all tests.
+2. In `app/config.py`, set `testing` to `True` (default set to `True`)
+3. To run the full test suite, run `pytest`
+4. To run a single test (ex. `test_user.py`) run `pytest tests/test_user.py`

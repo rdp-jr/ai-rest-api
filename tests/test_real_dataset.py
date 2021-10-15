@@ -1,13 +1,8 @@
 from io import StringIO
 from os import unlink
-from bson.objectid import ObjectId
 from fastapi.testclient import TestClient
 from fastapi import status
 from app.main import app
-from app.routes.real_dataset import get_real_dataset
-
-# from app.models.datasets import NewProject, Project
-# from app.schemas.real_dataset import projectEntity
 
 client = TestClient(app)
 
@@ -28,7 +23,7 @@ def test_get_real_dataset():
     project_id = project.json()['id']
 
     filename = "test_file"
-    test_real_dataset = client.post(f'projects/{project_id}/real_datasets', 
+    test_real_dataset = client.post(f'/projects/{project_id}/real_datasets', 
         files={"file": (filename, StringIO("csv data here"), "rb")})
 
     test_real_dataset_id = test_real_dataset.json()['id']
@@ -84,4 +79,5 @@ def test_delete_real_dataset():
     assert response.status_code == status.HTTP_200_OK
     
     get_real_dataset = client.get(f"/real_datasets/{test_real_dataset['id']}")
+   
     assert get_real_dataset.status_code == status.HTTP_404_NOT_FOUND

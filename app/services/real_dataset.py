@@ -2,21 +2,12 @@ from bson.objectid import ObjectId
 from fastapi.datastructures import UploadFile
 from shortuuid import ShortUUID
 from os import unlink
-# from app.schemas.project import projectEntity, projectsEntity
-# from app.models.project import NewProject, UpdateProject, Project
 from app.config import logged_in_user_id
 from app.models.datasets import Dataset, UpdateDataset
 from uuid import uuid4
 import shutil
 
 from app.schemas.dataset import DatasetEntity
-
-# def get_projects_service(db):
-#     user = db.users.find_one({"_id": ObjectId(logged_in_user_id)})
-
-#     if not user:
-#         return False
-#     return projectsEntity(user['projects'])
    
 def get_real_dataset_service(db, real_dataset_id):
     pipeline = [

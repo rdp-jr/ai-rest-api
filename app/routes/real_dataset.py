@@ -7,15 +7,6 @@ from app.utils import get_db
 
 router = APIRouter()
 
-# @router.get("/projects/{project_id}/real_datasets")
-# async def index(db = Depends(get_db)):
-#     pass
-    # real_datasets = get_real_datasets_service(db)
-
-    # if not real_datasets:
-    #     raise HTTPException(status_code=404, detail="User not found")
-    # return real_datasets
-
 @router.get("/real_datasets/{real_dataset_id}", status_code=status.HTTP_200_OK)
 async def get_real_dataset(real_dataset_id: str, db = Depends(get_db)):
     real_dataset = get_real_dataset_service(db, real_dataset_id)
@@ -48,7 +39,7 @@ async def delete_real_dataset(project_id: str, real_dataset_id: str, db = Depend
         raise HTTPException(status_code=404, detail="Dataset not found")
     
     if not delete_real_dataset_service(db, project_id, real_dataset_id):
-        raise HTTPException(status_code=500, detail="Internal Server Error xd")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
     return status.HTTP_200_OK
 
     

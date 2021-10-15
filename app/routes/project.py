@@ -27,7 +27,10 @@ async def create_project(req: NewProject, db = Depends(get_db)):
     if not check_project_name_service(db, req.name):
         raise HTTPException(status_code=409, detail="Project with that name already exists")
 
-    return create_project_service(db, req)
+    project = create_project_service(db, req)
+    if not project:
+        raise HTTPException(status_code=500, detail="Internal server error")
+    return project
 
 @router.put("/projects/{project_id}", status_code=status.HTTP_200_OK)
 async def update_project(project_id: str, req: UpdateProject, db = Depends(get_db)):

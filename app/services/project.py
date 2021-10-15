@@ -36,6 +36,8 @@ def create_project_service(db, req: NewProject):
     if result.modified_count > 0:
         project = projectEntity(new_project.dict())
         return project
+        
+    return False
 
 def check_project_name_service(db, project_name):
     if db.users.find_one(

@@ -57,12 +57,13 @@ def create_real_dataset_service(db, project_id, file):
     
     return new_real_dataset.dict()
     
-def check_real_dataset_name_service(db, real_dataset_name):
+def check_real_dataset_name_service(db, project_id: str, real_dataset_name: str):
     pass
     if db.users.find_one(
             {'_id': ObjectId(logged_in_user_id), 
             'projects': {
                 '$elemMatch': {
+                    'id': project_id,
                     'real_datasets': {
                         '$elemMatch': {
                             'name': real_dataset_name

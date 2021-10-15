@@ -28,7 +28,7 @@ async def update_real_dataset(project_id: str, real_dataset_id: str, req: Update
     if not get_real_dataset_service(db, real_dataset_id):
         raise HTTPException(status_code=404, detail="Dataset not found")
     
-    if not check_real_dataset_name_service(db, req.name):
+    if not check_real_dataset_name_service(db, project_id, req.name):
         raise HTTPException(status_code=409, detail="Dataset with that name in project already exists")
 
     return update_real_dataset_service(db, project_id, real_dataset_id, req)

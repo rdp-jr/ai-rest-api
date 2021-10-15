@@ -47,23 +47,23 @@ def create_model_service(db, project_id: str, req: NewModel):
     return new_model.dict()
     
     
-# def check_real_dataset_name_service(db, real_dataset_name):
-#     pass
-#     if db.users.find_one(
-#             {'_id': ObjectId(logged_in_user_id), 
-#             'projects': {
-#                 '$elemMatch': {
-#                     'real_datasets': {
-#                         '$elemMatch': {
-#                             'name': real_dataset_name
-#                         }
-#                     }
-#                 }
-#             }}
-#         ):
+def check_model_name_service(db, project_id, model_name):
+    if db.users.find_one(
+            {'_id': ObjectId(logged_in_user_id), 
+            'projects': {
+                '$elemMatch': {
+                    'id': project_id,
+                    'models': {
+                        '$elemMatch': {
+                            'name': model_name
+                        }
+                    }
+                }
+            }}
+        ):
              
-#         return False 
-#     return True
+        return False 
+    return True
 
 def update_model_service(db, project_id: str, model_id: str, req:UpdateModel):  
     
@@ -84,11 +84,6 @@ def update_model_service(db, project_id: str, model_id: str, req:UpdateModel):
 
 
 def delete_model_service(db, project_id: str, model_id: str):
-
-
-    
-
-
     result = db.users.update_one(
     {'_id': ObjectId(logged_in_user_id), 'projects.id': project_id },
     {'$pull': {'projects.$.models': {"id": model_id}}}

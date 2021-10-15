@@ -30,7 +30,7 @@ def test_get_real_dataset():
     test_real_dataset_name = test_real_dataset.json()['name']
     
     
-    get_real_dataset = client.get(f"/projects/real_datasets/{test_real_dataset_id}")
+    get_real_dataset = client.get(f"/projects/{project_id}/real_datasets/{test_real_dataset_id}")
     assert get_real_dataset.status_code == status.HTTP_200_OK
 
     get_real_dataset = get_real_dataset.json()
@@ -57,7 +57,7 @@ def test_update_real_dataset():
 
     response = client.put(f"/projects/{project_id}/real_datasets/{test_real_dataset['id']}", json={"name": "test_updated_real_dataset_name"})
 
-    get_real_dataset = client.get(f"/projects/real_datasets/{test_real_dataset['id']}")
+    get_real_dataset = client.get(f"/projects/{project_id}/real_datasets/{test_real_dataset['id']}")
     get_real_dataset = get_real_dataset.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -78,6 +78,6 @@ def test_delete_real_dataset():
     response = client.delete(f"/projects/{project_id}/real_datasets/{test_real_dataset['id']}")
     assert response.status_code == status.HTTP_200_OK
     
-    get_real_dataset = client.get(f"/projects/real_datasets/{test_real_dataset['id']}")
+    get_real_dataset = client.get(f"/projects/{project_id}/real_datasets/{test_real_dataset['id']}")
    
     assert get_real_dataset.status_code == status.HTTP_404_NOT_FOUND

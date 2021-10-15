@@ -7,9 +7,9 @@ from app.utils import get_db
 
 router = APIRouter()
 
-@router.get("/projects/real_datasets/{real_dataset_id}", status_code=status.HTTP_200_OK)
-async def get_real_dataset(real_dataset_id: str, db = Depends(get_db)):
-    real_dataset = get_real_dataset_service(db, real_dataset_id)
+@router.get("/projects/{project_id}/real_datasets/{real_dataset_id}", status_code=status.HTTP_200_OK)
+async def get_real_dataset(project_id: str, real_dataset_id: str, db = Depends(get_db)):
+    real_dataset = get_real_dataset_service(db, project_id, real_dataset_id)
 
     if not real_dataset:
         raise HTTPException(status_code=404, detail="real_dataset not found")
@@ -25,7 +25,7 @@ async def create_real_dataset(project_id: str, file: UploadFile = File(...), db 
 
 @router.put("/projects/{project_id}/real_datasets/{real_dataset_id}", status_code=status.HTTP_200_OK)
 async def update_real_dataset(project_id: str, real_dataset_id: str, req: UpdateDataset, db = Depends(get_db)):
-    if not get_real_dataset_service(db, real_dataset_id):
+    if not get_real_dataset_service(db, project_id, real_dataset_id):
         raise HTTPException(status_code=404, detail="Dataset not found")
     
     if not check_real_dataset_name_service(db, project_id, req.name):
@@ -35,7 +35,7 @@ async def update_real_dataset(project_id: str, real_dataset_id: str, req: Update
 
 @router.delete("/projects/{project_id}/real_datasets/{real_dataset_id}", status_code=status.HTTP_200_OK)
 async def delete_real_dataset(project_id: str, real_dataset_id: str, db = Depends(get_db)):
-    if not get_real_dataset_service(db, real_dataset_id):
+    if not get_real_dataset_service(db, project_id, real_dataset_id):
         raise HTTPException(status_code=404, detail="Dataset not found")
     
     if not delete_real_dataset_service(db, project_id, real_dataset_id):

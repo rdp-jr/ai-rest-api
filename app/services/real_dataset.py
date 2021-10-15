@@ -9,10 +9,11 @@ import shutil
 
 from app.schemas.dataset import DatasetEntity
    
-def get_real_dataset_service(db, real_dataset_id):
+def get_real_dataset_service(db, project_id, real_dataset_id):
     pipeline = [
         {"$match": {'_id': ObjectId(logged_in_user_id), 'projects.real_datasets.id': real_dataset_id}},
         {"$unwind": "$projects"},
+        {"$match": {"projects.id": project_id}},
         {"$unwind": "$projects.real_datasets"},
         {"$match": {"projects.real_datasets.id": real_dataset_id}}
     ]
@@ -89,17 +90,17 @@ def update_real_dataset_service(db, project_id: str, real_dataset_id: str, req:U
     if not result.modified_count > 0:
         return False
     
-    return get_real_dataset_service(db, real_dataset_id)
+    return get_real_dataset_service(db, project_id, real_dataset_id)
 
-def delete_file_from_file_server(db, real_dataset_id):
+def delete_file_from_file_server(db, project_id, real_dataset_id):
     # delete file from cloud storage
     # for development, delete file from local file system
-    dataset = get_real_dataset_service(db, real_dataset_id)
+    dataset = get_real_dataset_service(db, project_id, real_dataset_id)
     unlink(dataset['url'])
 
 def delete_real_dataset_service(db, project_id: str, real_dataset_id: str):
 
-    delete_file_from_file_server(db, real_dataset_id)
+    delete_file_from_file_server(db, project_id, real_dataset_id)
     
 
 

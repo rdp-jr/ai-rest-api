@@ -1,4 +1,5 @@
 from bson.objectid import ObjectId
+from shortuuid.main import ShortUUID
 from app.schemas.project import projectEntity, projectsEntity
 from app.models.project import NewProject, UpdateProject, Project
 from app.config import logged_in_user_id
@@ -25,7 +26,7 @@ def get_project_service(db, project_id):
 def create_project_service(db, req: NewProject):
     data = req.dict(exclude_unset=True)
         
-    new_project = Project(**data, id=str(ObjectId()))
+    new_project = Project(**data, id=ShortUUID().random(length=5))
 
     result = db.users.update_one(
     {"_id": ObjectId(logged_in_user_id) },

@@ -40,4 +40,12 @@ async def update_project(project_id: str, req: UpdateProject, db = Depends(get_d
     if not check_project_name_service(db, req.name):
         raise HTTPException(status_code=409, detail="Project with that name already exists")
     update_project_service(db, project_id, req)
+
+@router.delete("/projects/{project_id}", status_code=status.HTTP_200_OK)
+async def delete_project(project_id: str, db = Depends(get_db)):
+    if not get_project_service(db, project_id):
+        raise HTTPException(status_code=404, detail="Dataset not found")
     
+    if not delete_project_service(db, project_id):
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    return status.HTTP_200_OK

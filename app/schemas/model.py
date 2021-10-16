@@ -1,11 +1,15 @@
-def ModelEntity(item) -> dict:
+def modelEntity(item) -> dict:
     return {
         "id": str(item["id"]),
         "name": str(item["name"]),
-        "parameters": ModelParameterEntity(item["parameters"])
+        "parameters": modelParameterEntity(item["parameters"])
     }
 
-def ModelParameterEntity(item) -> dict:
+def modelsEntity(entity) -> list:
+    return [modelEntity(item) for item in entity]
+
+
+def modelParameterEntity(item) -> dict:
     return {
         "batch_size": int(item["batch_size"]),
         "training_cycles": int(item["training_cycles"])

@@ -6,7 +6,25 @@ from app.models.datasets import Dataset
 from uuid import uuid4
 import shutil
 from app.models.model import UpdateModel
-from app.schemas.dataset import DatasetEntity
+from app.schemas.dataset import datasetEntity, datasetsEntity
+
+def get_synthetic_datasets_service(db, project_id, model_id):
+    pipeline = [
+        {"$match": {'_id': ObjectId(logged_in_user_id), 'projects.models.id': model_id }},
+        {"$unwind": "$projects"},
+        {"$match": {"projects.id": project_id}},
+        {"$unwind": "$projects.models"},
+        {"$match": {"projects.models.id": model_id}}
+    ]
+    synthetic_datasets = list(db.users.aggregate(pipeline))
+    
+    if synthetic_datasets == []:
+        return False
+
+    synthetic_datasets = synthetic_datasets[0]['projects']['models']['synthetic_datasets']
+
+    return datasetsEntity(synthetic_datasets)
+
 
 def get_synthetic_dataset_service(db, project_id, model_id, synthetic_dataset_id):
     
@@ -26,7 +44,7 @@ def get_synthetic_dataset_service(db, project_id, model_id, synthetic_dataset_id
 
     synthetic_dataset = synthetic_dataset[0]['projects']['models']['synthetic_datasets']
 
-    return DatasetEntity(synthetic_dataset)
+    return datasetEntity(synthetic_dataset)
     
 
 def generate_synthetic_data():

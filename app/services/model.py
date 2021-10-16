@@ -5,8 +5,25 @@ from os import unlink
 from app.config import logged_in_user_id
 from app.models.model import Model, ModelParameter, NewModel, UpdateModel
 from uuid import uuid4
+from app.services.synthetic_dataset import delete_synthetic_dataset_service, get_synthetic_datasets_service
 
-from app.schemas.model import ModelEntity
+from app.schemas.model import modelEntity, modelsEntity
+
+def get_models_service(db, project_id):
+    
+    pipeline = [
+        {"$match": {'_id': ObjectId(logged_in_user_id), 'projects.id': project_id}},
+        {"$unwind": "$projects"},
+        {"$match": {"projects.id": project_id}}
+    ]
+    models = list(db.users.aggregate(pipeline))
+
+    if models == []:
+        return False
+
+    models = models[0]['projects']['models']
+
+    return modelsEntity(models)
 
 def get_model_service(db, project_id, model_id):
     
@@ -24,7 +41,7 @@ def get_model_service(db, project_id, model_id):
 
     model = model[0]['projects']['models']
 
-    return ModelEntity(model)
+    return modelEntity(model)
     
 
 
@@ -84,6 +101,13 @@ def update_model_service(db, project_id: str, model_id: str, req:UpdateModel):
 
 
 def delete_model_service(db, project_id: str, model_id: str):
+    
+    synthetic_datasets = get_synthetic_datasets_service(db, project_id, model_id)
+
+    if isinstance(synthetic_datasets, list):
+        for synthetic_dataset in synthetic_datasets:
+            delete_synthetic_dataset_service(db, project_id, model_id, synthetic_dataset["id"])
+    
     result = db.users.update_one(
     {'_id': ObjectId(logged_in_user_id), 'projects.id': project_id },
     {'$pull': {'projects.$.models': {"id": model_id}}}

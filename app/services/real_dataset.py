@@ -7,7 +7,26 @@ from app.models.datasets import Dataset, UpdateDataset
 from uuid import uuid4
 import shutil
 
-from app.schemas.dataset import DatasetEntity
+from app.schemas.dataset import datasetEntity, datasetsEntity
+
+def get_real_datasets_service(db, project_id, ):
+    pipeline = [
+        {"$match": {'_id': ObjectId(logged_in_user_id), 'projects.id': project_id}},
+        {"$unwind": "$projects"},
+        {"$match": {"projects.id": project_id}},
+    ]
+    real_datasets = list(db.users.aggregate(pipeline))
+
+    if real_datasets == []:
+        return False
+
+    real_datasets = real_datasets[0]['projects']['real_datasets']
+
+    if not real_datasets:
+        return False
+
+    return datasetsEntity(real_datasets)
+
    
 def get_real_dataset_service(db, project_id, real_dataset_id):
     pipeline = [
@@ -27,7 +46,7 @@ def get_real_dataset_service(db, project_id, real_dataset_id):
     if not real_dataset:
         return False
 
-    return DatasetEntity(real_dataset)
+    return datasetEntity(real_dataset)
     
 
 def save_to_file_server_service(file: UploadFile, file_name: str):
@@ -102,8 +121,6 @@ def delete_real_dataset_service(db, project_id: str, real_dataset_id: str):
 
     delete_file_from_file_server(db, project_id, real_dataset_id)
     
-
-
     result = db.users.update_one(
     {'_id': ObjectId(logged_in_user_id), 'projects.id': project_id },
     {'$pull': {'projects.$.real_datasets': {"id": real_dataset_id}}}

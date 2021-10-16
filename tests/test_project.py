@@ -43,3 +43,14 @@ def test_update_project_nonexistent_id():
     nonexistent_id = '123'
     response = client.put(f"/projects/{nonexistent_id}", json={"name": "test_update_project_nonexistent_id"})
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+def test_delete_project():
+    test_project = client.post('/projects', json={'name': 'test_delete_project'})
+    test_project = test_project.json()
+
+    response = client.delete(f"/projects/{test_project['id']}")
+
+    get_project = client.get(f"/projects/{test_project['id']}")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert get_project.status_code == status.HTTP_404_NOT_FOUND
